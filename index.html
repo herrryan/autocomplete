@@ -1,0 +1,29 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="src/jquery.autocomplete.js"></script>
+<script>
+$(document).ready(function () {
+    
+    $("#suggest").autocomplete({
+        delay: 100,
+        source: function (request, response) {
+            
+            // Suggest URL
+            var suggestURL = "http://suggestqueries.google.com/complete/search?client=chrome&q=%QUERY";
+            suggestURL = suggestURL.replace('%QUERY', request.term);
+            
+            // JSONP Request
+            $.ajax({
+                method: 'GET',
+                dataType: 'jsonp',
+                jsonpCallback: 'jsonCallback',
+                url: suggestURL
+            })
+            .success(function(data){
+                response(data[1]);
+            });
+        }
+    });
+
+});
+</script>
+<input type="text" placeholder="type something ..." id="suggest" />
